@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.vaaaarlos.peopleapi.dto.MessageResponseDTO;
 import com.vaaaarlos.peopleapi.dto.PersonDTO;
 import com.vaaaarlos.peopleapi.entity.Person;
+import com.vaaaarlos.peopleapi.exception.PersonNotFoundException;
 import com.vaaaarlos.peopleapi.mapper.PersonMapper;
 import com.vaaaarlos.peopleapi.repository.PersonRepository;
 
@@ -30,6 +31,11 @@ public class PersonService {
   public List<PersonDTO> listAll() {
     List<Person> allPeople = personRepository.findAll();
     return allPeople.stream().map(personMapper::toDTO).collect(Collectors.toList());
+  }
+
+  public PersonDTO findById(Long id) throws PersonNotFoundException {
+    Person person = personRepository.findById(id).orElseThrow(() -> new PersonNotFoundException(id));
+    return personMapper.toDTO(person);
   }
 
 }
