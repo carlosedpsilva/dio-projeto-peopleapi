@@ -1,5 +1,8 @@
 package com.vaaaarlos.peopleapi.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.vaaaarlos.peopleapi.dto.MessageResponseDTO;
 import com.vaaaarlos.peopleapi.dto.PersonDTO;
 import com.vaaaarlos.peopleapi.entity.Person;
@@ -22,6 +25,11 @@ public class PersonService {
     Person personToSave = personMapper.toModel(personDTO);
     Person savedPerson = personRepository.save(personToSave);
     return MessageResponseDTO.builder().message("Created person with ID " + savedPerson.getId()).build();
+  }
+
+  public List<PersonDTO> listAll() {
+    List<Person> allPeople = personRepository.findAll();
+    return allPeople.stream().map(personMapper::toDTO).collect(Collectors.toList());
   }
 
 }
