@@ -1,11 +1,17 @@
 package com.vaaaarlos.peopleapi.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import com.vaaaarlos.peopleapi.dto.PersonDTO;
+import com.vaaaarlos.peopleapi.entity.Person;
 
-@Mapper
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+@Mapper(componentModel = "spring")
 public interface PersonMapper {
-  
-  PersonMapper INSTANCE = Mappers.getMapper(PersonMapper.class);
+
+  @Mapping(target = "birthDate", source = "birthDate", dateFormat = "dd/MM/yyyy")
+  Person toModel(PersonDTO personDTO);
+
+  PersonDTO toDTO(Person person);
 
 }
