@@ -1,0 +1,47 @@
+[33mcommit ad8ae79095a7cd990d3205b98b27997eb1681503[m[33m ([m[1;36mHEAD -> [m[1;32mupdate_feature[m[33m, [m[1;31morigin/update_feature[m[33m, [m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m
+Author: vaaaarlos <kadu.cerq@gmail.com>
+Date:   Mon Mar 22 16:08:42 2021 -0300
+
+    Developed DELETE byId feat
+
+[33mcommit 1b1995050fd2fa89a4718efbba2fd8d3e265728b[m
+Author: vaaaarlos <kadu.cerq@gmail.com>
+Date:   Mon Mar 22 16:08:13 2021 -0300
+
+    Developed GET Person byId feat
+
+[33mcommit 9d7aa20ddc89d8098b2a1560e650d742bae0cfd2[m
+Author: vaaaarlos <kadu.cerq@gmail.com>
+Date:   Mon Mar 22 16:07:37 2021 -0300
+
+    Developed GET Person listAll feat
+
+[33mcommit 2f5b48a34db6ca95944ea2390af7756f64b489fb[m
+Author: vaaaarlos <kadu.cerq@gmail.com>
+Date:   Mon Mar 22 14:47:21 2021 -0300
+
+    Developed POST Person feat
+
+[33mcommit e304f66213203734bc4d0d53aaf1895094aea2ee[m
+Author: vaaaarlos <kadu.cerq@gmail.com>
+Date:   Mon Mar 22 14:42:18 2021 -0300
+
+    Created DTO structure
+
+[33mcommit 54655126e1cb163ecb037e9519400ae438cf0fd3[m
+Author: vaaaarlos <kadu.cerq@gmail.com>
+Date:   Mon Mar 22 14:41:44 2021 -0300
+
+    Created entity structure
+
+[33mcommit 0e58e1900dedd294dab087aedfeb861b6b12d5ac[m
+Author: vaaaarlos <kadu.cerq@gmail.com>
+Date:   Mon Mar 22 09:23:54 2021 -0300
+
+    Added system.properties for heroku deployment
+
+[33mcommit 633b4f4d1c8860ae3eae3fd6b6c074fbaa2c312a[m
+Author: vaaaarlos <kadu.cerq@gmail.com>
+Date:   Mon Mar 22 09:16:42 2021 -0300
+
+    Initial commit

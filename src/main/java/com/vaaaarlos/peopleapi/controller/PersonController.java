@@ -2,6 +2,8 @@ package com.vaaaarlos.peopleapi.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import com.vaaaarlos.peopleapi.dto.MessageResponseDTO;
 import com.vaaaarlos.peopleapi.dto.PersonDTO;
 import com.vaaaarlos.peopleapi.exception.PersonNotFoundException;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -27,7 +30,7 @@ public class PersonController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public MessageResponseDTO createPerson(@RequestBody PersonDTO personDTO) {
+  public MessageResponseDTO createPerson(@RequestBody @Valid PersonDTO personDTO) {
     return personService.createPerson(personDTO);
   }
 
@@ -44,5 +47,10 @@ public class PersonController {
   @DeleteMapping("{id}")
   public void deleteById(@PathVariable Long id) throws PersonNotFoundException {
     personService.deleteById(id);
+  }
+
+  @PutMapping("{id}")
+  public MessageResponseDTO updatePerson(@PathVariable Long id, @RequestBody @Valid PersonDTO personDTO) throws PersonNotFoundException {
+    return personService.updateById(id, personDTO);
   }
 }
