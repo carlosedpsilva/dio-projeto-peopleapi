@@ -68,7 +68,7 @@ public class PersonServiceTest {
   }
 
   @Test
-  void testGivenInvlaidPersonIdThenThrowException() {
+  void testGivenInvalidPersonIdThenThrowException() {
     var invalidId = 1L;
     
     when(personRepository.findById(invalidId)).thenReturn(Optional.ofNullable(any(Person.class)));
@@ -87,9 +87,47 @@ public class PersonServiceTest {
     assertFalse(registeredPeopleDTOList.isEmpty());
     assertEquals(expectedRegisteredPeople.get(0).getId(), registeredPeopleDTOList.get(0).getId());
   }
+  
+  @Test
+  void testGivenValidIdAndUpdateInfoThenReturnSuccessOnUpdate() throws PersonNotFoundException {
+    var updateId = 2L;
+
+    PersonDTO updatePersonDTO = createFakeDTO();
+    updatePersonDTO.setId(updateId);
+    updatePersonDTO.setLastName("Updated");
+
+    Person expectedPersonToUpdate = createFakeEntity();
+    expectedPersonToUpdate.setId(updateId);
+
+    Person updatedPerson = createFakeEntity();
+    updatedPerson.setId(updatePersonDTO.getId());
+    updatedPerson.setLastName(updatePersonDTO.getLastName());
+    
+    
+    when(personRepository.findById(updateId)).thenReturn(Optional.of(expectedPersonToUpdate));
+    when(personRepository.save(any(Person.class))).thenReturn(updatedPerson);
+    
+    MessageResponseDTO updateMessage = personService.updateById(expectedPersonToUpdate.getId(), updatePersonDTO);
+    MessageResponseDTO expectedUpdateMessage = createExpectedMessageResponse(expectedPersonToUpdate.getId(), "Updated person with ID ");
+
+    assertEquals(expectedUpdateMessage, updateMessage);
+    assertEquals(updatePersonDTO.getLastName(), updatedPerson.getLastName());
+  }
+
+  @Test
+  void testGivenInvalidIdAndUpdateInfoThenThrowException() {
+    var invalidPersonId = 1L;
+
+    PersonDTO updatePersonDTO = createFakeDTO();
+    updatePersonDTO.setId(invalidPersonId);
+
+    when(personRepository.findById(invalidPersonId)).thenReturn(Optional.ofNullable(any(Person.class)));
+
+    assertThrows(PersonNotFoundException.class, () -> personService.updateById(invalidPersonId, updatePersonDTO));
+  }
+  
 
   private MessageResponseDTO createExpectedMessageResponse(Long id, String message) {
     return MessageResponseDTO.builder().message(message + id).build();
   }
-
 }
