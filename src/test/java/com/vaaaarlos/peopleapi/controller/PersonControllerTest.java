@@ -3,7 +3,10 @@ package com.vaaaarlos.peopleapi.controller;
 import static com.vaaaarlos.peopleapi.utils.PersonUtils.asJsonString;
 import static com.vaaaarlos.peopleapi.utils.PersonUtils.createFakeDTO;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -24,7 +27,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
@@ -76,7 +78,7 @@ public class PersonControllerTest {
 
     when(personService.listAll()).thenReturn(expectedPersonDTOList);
 
-    mockMvc.perform(MockMvcRequestBuilders.get(PEOPLE_API_URL_PATH)
+    mockMvc.perform(get(PEOPLE_API_URL_PATH)
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].id", is(1)))
@@ -92,7 +94,7 @@ public class PersonControllerTest {
 
     when(personService.findById(expectedValidId)).thenReturn(expectedPersonDTO);
 
-    mockMvc.perform(MockMvcRequestBuilders.get(PEOPLE_API_URL_PATH + "/" + expectedValidId)
+    mockMvc.perform(get(PEOPLE_API_URL_PATH + "/" + expectedValidId)
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id", is(1)))
@@ -108,7 +110,27 @@ public class PersonControllerTest {
 
     when(personService.findById(expectedInvalidId)).thenThrow(PersonNotFoundException.class);
 
-    mockMvc.perform(MockMvcRequestBuilders.get(PEOPLE_API_URL_PATH + "/" + expectedInvalidId)
+    mockMvc.perform(get(PEOPLE_API_URL_PATH + "/" + expectedInvalidId)
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  void testWhenDELETEIsCalledWithValidIdThenAPersonShouldBeDeleted() throws Exception {
+    var expectedValidId = 1L;
+
+    mockMvc.perform(delete(PEOPLE_API_URL_PATH + "/" + expectedValidId)
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNoContent());
+  }
+  
+  @Test
+  void testWhenDELETEIsCalledWithInvalidIdThenAnErrorMessageShouldBeReturned() throws Exception {
+    var expectedInvalidId = 1L;
+
+    doThrow(PersonNotFoundException.class).when(personService).deleteById(expectedInvalidId);;
+
+    mockMvc.perform(delete(PEOPLE_API_URL_PATH + "/" + expectedInvalidId)
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound());
   }
