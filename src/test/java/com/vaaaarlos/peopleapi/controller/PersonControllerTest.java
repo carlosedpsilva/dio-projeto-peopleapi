@@ -8,8 +8,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.vaaaarlos.peopleapi.dto.MessageResponseDTO;
 import com.vaaaarlos.peopleapi.dto.PersonDTO;
+import com.vaaaarlos.peopleapi.exception.PersonNotFoundException;
 import com.vaaaarlos.peopleapi.service.PersonService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
@@ -60,6 +65,52 @@ public class PersonControllerTest {
 
   private MessageResponseDTO createMessageResponse(long id, String message) {
     return MessageResponseDTO.builder().message(message + id).build();
+  }
+
+  @Test
+  void testWhenGETIsCalledThenReturnAllRegisteredPeopleListShouldBeReturned() throws Exception {
+    var expectedValidId = 1L;
+    PersonDTO expectedPersonDTO = createFakeDTO();
+    expectedPersonDTO.setId(expectedValidId);
+    List<PersonDTO> expectedPersonDTOList = Collections.singletonList(expectedPersonDTO);
+
+    when(personService.listAll()).thenReturn(expectedPersonDTOList);
+
+    mockMvc.perform(MockMvcRequestBuilders.get(PEOPLE_API_URL_PATH)
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].id", is(1)))
+        .andExpect(jsonPath("$[0].firstName", is("João")))
+        .andExpect(jsonPath("$[0].lastName", is("Carlos")));
+  }
+  
+  @Test
+  void testWhenGETIsCalledWithValidIdThenAPersonShouldBeReturned() throws Exception {
+    var expectedValidId = 1L;
+    PersonDTO expectedPersonDTO = createFakeDTO();
+    expectedPersonDTO.setId(expectedValidId);
+
+    when(personService.findById(expectedValidId)).thenReturn(expectedPersonDTO);
+
+    mockMvc.perform(MockMvcRequestBuilders.get(PEOPLE_API_URL_PATH + "/" + expectedValidId)
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id", is(1)))
+        .andExpect(jsonPath("$.firstName", is("João")))
+        .andExpect(jsonPath("$.lastName", is("Carlos")));
+  }
+  
+  @Test
+  void testWhenGETIsCalledWithInvalidIdThenAnErrorMessageShouldBeReturned() throws Exception {
+    var expectedInvalidId = 1L;
+    PersonDTO expectedPersonDTO = createFakeDTO();
+    expectedPersonDTO.setId(expectedInvalidId);
+
+    when(personService.findById(expectedInvalidId)).thenThrow(PersonNotFoundException.class);
+
+    mockMvc.perform(MockMvcRequestBuilders.get(PEOPLE_API_URL_PATH + "/" + expectedInvalidId)
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound());
   }
 
 }
