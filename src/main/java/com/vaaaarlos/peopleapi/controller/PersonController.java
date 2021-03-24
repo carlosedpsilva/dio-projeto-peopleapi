@@ -21,11 +21,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.AllArgsConstructor;
+
 @RestController
 @RequestMapping("api/v1/people")
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class PersonController {
   
-  @Autowired
   private PersonService personService;
 
   @PostMapping

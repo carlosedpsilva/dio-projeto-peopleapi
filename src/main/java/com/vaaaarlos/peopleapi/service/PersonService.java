@@ -13,13 +13,14 @@ import com.vaaaarlos.peopleapi.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class PersonService {
 
-  @Autowired
   private PersonRepository personRepository;
 
-  @Autowired
   private PersonMapper personMapper;
 
   public MessageResponseDTO createPerson(PersonDTO personDTO) {
