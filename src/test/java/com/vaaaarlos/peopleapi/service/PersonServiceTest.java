@@ -3,10 +3,13 @@ package com.vaaaarlos.peopleapi.service;
 import static com.vaaaarlos.peopleapi.utils.PersonUtils.createFakeDTO;
 import static com.vaaaarlos.peopleapi.utils.PersonUtils.createFakeEntity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import com.vaaaarlos.peopleapi.dto.MessageResponseDTO;
@@ -71,6 +74,18 @@ public class PersonServiceTest {
     when(personRepository.findById(invalidId)).thenReturn(Optional.ofNullable(any(Person.class)));
 
     assertThrows(PersonNotFoundException.class, () -> personService.findById(invalidId));
+  }
+
+  @Test
+  void testGivenNoDataThenReturnAllPeopleRegistered() {
+    List<Person> expectedRegisteredPeople = Collections.singletonList(createFakeEntity());
+
+    when(personRepository.findAll()).thenReturn(expectedRegisteredPeople);
+
+    List<PersonDTO> registeredPeopleDTOList = personService.listAll();
+
+    assertFalse(registeredPeopleDTOList.isEmpty());
+    assertEquals(expectedRegisteredPeople.get(0).getId(), registeredPeopleDTOList.get(0).getId());
   }
 
   private MessageResponseDTO createExpectedMessageResponse(Long id, String message) {
